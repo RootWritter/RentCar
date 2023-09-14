@@ -63,19 +63,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="{{ url('/car') }}">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">car_rental</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Data Mobil</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-white " href="{{ url('/rent') }}">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
-                        <span class="nav-link-text ms-1">Data Penyewa</span>
+                        <span class="nav-link-text ms-1">Data Sewa</span>
                     </a>
                 </li>
             </ul>
@@ -101,7 +93,7 @@
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 justify-content-end" id="navbar">
                     <ul class="navbar-nav">
                         <li class="nav-item d-flex align-items-center">
-                            <a href="{{ url('admin/logout') }}" class="nav-link text-body font-weight-bold px-0">
+                            <a href="{{ url('logout') }}" class="nav-link text-body font-weight-bold px-0">
                                 <i class="fa fa-sign-out-alt me-sm-1"></i>
                                 <span class="d-sm-inline d-none">Keluar App</span>
                             </a>

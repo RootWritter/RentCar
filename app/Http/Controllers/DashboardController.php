@@ -29,4 +29,11 @@ class DashboardController extends Controller
         ];
         return view('dashboard', $data);
     }
+    public function rentData()
+    {
+        $data = [
+            'page' => 'Halaman Riwayat Penyewaan',
+        ];
+        return view('rent_data', $data);
+    }
 }

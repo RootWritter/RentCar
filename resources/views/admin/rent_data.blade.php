@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.template')
 @section('view')
 <div class="row">
     <!-- Zero config table start -->
@@ -13,6 +13,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Nama Penyewa</th>
                                 <th>Merk</th>
                                 <th>Model</th>
                                 <th>Tanggal Mulai Sewa</th>
@@ -21,7 +22,6 @@
                                 <th>Harga</th>
                                 <th>Final Harga</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,12 +68,16 @@
 @section('script')
 <script>
     var table = $('#simpletable').DataTable({
-        ajax: "{{url('data/rent-data')}}",
+        ajax: "{{url('admin/data/rent-data')}}",
         processing: true,
         serverSide: true,
         columns: [{
                 data: 'id',
                 name: 'id'
+            },
+            {
+                data: 'name',
+                name: 'name'
             },
             {
                 data: 'brand',
@@ -107,89 +111,7 @@
                 data: 'status',
                 name: 'status'
             },
-            {
-                data: 'action',
-                name: 'action'
-            },
         ],
     });
-
-    function returnCar(id) {
-        $(".modalKonfirmasi").modal('show');
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "{{url('data/get-history-rent')}}",
-            data: {
-                id: id,
-                _token: token
-            },
-            success: function(data) {
-                $("#return_id").val(data.id);
-                $("#return_brand").val(data.brand);
-                $("#return_model").val(data.model);
-            }
-        })
-    }
-    $("#edit").submit(function(e) {
-        e.preventDefault();
-        var form = new FormData(this);
-        form.append('action', 'edit');
-        form.append('_token', token);
-        axios.post("{{url('ajax/return-car')}}", form)
-            .then(response => {
-                $(".modalKonfirmasi").modal('hide');
-                if (response.data.status) {
-                    setTimeout(function() {
-                        swal.fire({
-                            text: response.data.message,
-                            icon: 'success',
-                            buttonsStyling: false,
-                            confirmButtonText: 'Ok, got it!',
-                            customClass: {
-                                confirmButton: 'btn font-weight-bold btn-primary',
-                            },
-                        }).then(function() {
-                            $(".modalKonfirmasi").modal('hide');
-                            table.ajax.reload();
-                        });
-                    }, 200);
-                } else {
-                    setTimeout(function() {
-                        swal.fire({
-                            text: response.data.message,
-                            icon: 'error',
-                            buttonsStyling: false,
-                            confirmButtonText: 'Ok lets check',
-                            customClass: {
-                                confirmButton: 'btn font-weight-bold btn-danger',
-                            },
-                        });
-                    }, 200);
-                }
-            })
-            .catch(error => {
-                $(".modalKonfirmasi").modal('hide')
-                if (error.response) {
-                    const data = error.response.data;
-                    var errorAjax = data.errors;
-                    let errorMessage = '';
-                    Object.keys(errorAjax).map(function(key) {
-                        errorMessage += errorAjax[key][0] + '<br/>'
-                    });
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        html: errorMessage,
-                    })
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Server mengalami masalah!',
-                    })
-                }
-            });
-    })
 </script>
 @endsection

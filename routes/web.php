@@ -16,11 +16,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'dashboard']);
+    Route::get('rent', [\App\Http\Controllers\DashboardController::class, 'rentData']);
     Route::prefix('data')->group(function () {
         Route::post('get-model', [\App\Http\Controllers\DataController::class, 'getModel']);
+        Route::get('rent-data', [\App\Http\Controllers\DataController::class, 'rentData']);
+        Route::post('get-history-rent', [\App\Http\Controllers\DataController::class, 'rentDataHistory']);
     });
     Route::prefix('ajax')->group(function () {
         Route::post('rent', [\App\Http\Controllers\AjaxController::class, 'rentCar']);
+        Route::post('return-car', [\App\Http\Controllers\AjaxController::class, 'returnCar']);
+    });
+    Route::get('logout', function () {
+        Auth::logout();
+        return redirect('auth/login');
     });
 });
 
@@ -36,12 +44,14 @@ Route::prefix('admin')->group(function () {
     Route::middleware('adminauth')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'dashboard']);
         Route::get('car', [\App\Http\Controllers\Admin\DashboardController::class, 'car']);
+        Route::get('rent', [\App\Http\Controllers\Admin\DashboardController::class, 'rent']);
 
 
 
         Route::prefix('data')->group(function () {
             Route::get('car', [\App\Http\Controllers\Admin\DataController::class, 'car']);
             Route::post('get-car', [\App\Http\Controllers\Admin\DataController::class, 'getCar']);
+            Route::get('rent-data', [\App\Http\Controllers\Admin\DataController::class, 'rentData']);
         });
         Route::prefix('ajax')->group(function () {
             Route::post('car', [\App\Http\Controllers\Admin\AjaxController::class, 'car']);

@@ -23,4 +23,12 @@ class DashboardController extends Controller
         ];
         return view('admin.car', $data);
     }
+    public function rent()
+    {
+        $data = [
+            'page' => 'Halaman Data Penyewa',
+            'user' => auth()->guard('admin')->user()
+        ];
+        return view('admin.rent_data', $data);
+    }
 }

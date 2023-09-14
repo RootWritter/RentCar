@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\RentData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,10 +28,6 @@ class AjaxController extends Controller
                 ['return', 1]
             ])->first();
             if (!$checkCar) throw new \ErrorException('Mobil yang dicari tidak ada / tidak tersedia');
-            $checkRentData = RentData::where([
-                ['car_id', $checkCar['id']],
-            ])->whereNotNull('date_end_rent')->count();
-            if ($checkRentData) throw new \ErrorException('Tidak dapat mengambil data Status Mobil');
             $data = [
                 'car_id' => $checkCar['id'],
                 'user_id' => $user['id'],
@@ -49,6 +46,40 @@ class AjaxController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil Menyewa Mobil',
+            ]);
+        } catch (\ErrorException $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function returnCar(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validate = $this->validate($request, [
+                'id' => 'required',
+                'number_plate' => 'required'
+            ]);
+            $checkSewa = RentData::where('id', $validate['id'])->first();
+            $now = Carbon::now();
+            $start = new Carbon($checkSewa['date_start_rent']);
+            $diff =  $start->diffInDays($now);
+            $car = Car::where('id', $checkSewa['car_id'])->first();
+            $priceCorrection = $car['price'] * ($diff + 1);
+            RentData::where('id', $checkSewa['id'])->update([
+                'date_end_rent' => Carbon::now()->format('Y-m-d'),
+                'price_correction' => $priceCorrection,
+            ]);
+            Car::where('id', $car['id'])->update([
+                'return' => 1,
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil Mengembalikan Mobil',
             ]);
         } catch (\ErrorException $e) {
             DB::rollBack();

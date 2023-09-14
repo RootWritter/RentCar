@@ -37,8 +37,6 @@
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.min.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-gray-200">
@@ -177,7 +175,7 @@
             e.preventDefault();
             var form = new FormData(this);
             form.append('_token', token);
-            axios.post(`{{ url('auth/login') }}`, form)
+            axios.post(`{{ url('admin/login') }}`, form)
                 .then(result => {
                     if (!result.data.status) {
                         Swal.fire({
@@ -193,7 +191,7 @@
                             showConfirmButton: false,
                             timer: 2500
                         }).then(function() {
-                            window.location.href = "{{ url('/') }}"
+                            window.location.href = "{{ url('admin') }}"
                         });
                     }
                     $("#submit_btn").attr('disabled', false);

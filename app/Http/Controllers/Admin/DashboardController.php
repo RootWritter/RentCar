@@ -15,4 +15,12 @@ class DashboardController extends Controller
         ];
         return view('admin.dashboard', $data);
     }
+    public function car()
+    {
+        $data = [
+            'page' => 'Halaman Data Mobil',
+            'user' => auth()->guard('admin')->user()
+        ];
+        return view('admin.car', $data);
+    }
 }

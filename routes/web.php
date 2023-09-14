@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'dashboard']);
+    Route::prefix('data')->group(function () {
+        Route::post('get-model', [\App\Http\Controllers\DataController::class, 'getModel']);
+    });
+    Route::prefix('ajax')->group(function () {
+        Route::post('rent', [\App\Http\Controllers\AjaxController::class, 'rentCar']);
+    });
 });
 
 Route::get('auth/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
@@ -28,8 +35,23 @@ Route::post('auth/login', [\App\Http\Controllers\AuthController::class, 'authent
 Route::prefix('admin')->group(function () {
     Route::middleware('adminauth')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'dashboard']);
+        Route::get('car', [\App\Http\Controllers\Admin\DashboardController::class, 'car']);
+
+
+
+        Route::prefix('data')->group(function () {
+            Route::get('car', [\App\Http\Controllers\Admin\DataController::class, 'car']);
+            Route::post('get-car', [\App\Http\Controllers\Admin\DataController::class, 'getCar']);
+        });
+        Route::prefix('ajax')->group(function () {
+            Route::post('car', [\App\Http\Controllers\Admin\AjaxController::class, 'car']);
+        });
     });
 
     Route::get('login', [\App\Http\Controllers\Admin\AuthController::class, 'login'])->name('adminLogin');
     Route::post('login', [\App\Http\Controllers\Admin\AuthController::class, 'authenticate']);
+    Route::get('logout', function () {
+        Auth::guard('admin')->logout();
+        return redirect('admin/login');
+    });
 });

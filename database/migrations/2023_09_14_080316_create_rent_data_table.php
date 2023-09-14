@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cars', function (Blueprint $table) {
+        Schema::create('rent_data', function (Blueprint $table) {
             $table->id();
-            $table->string('brand');
-            $table->string('model');
-            $table->string('number_plate');
+            $table->integer('car_id');
+            $table->integer('user_id');
+            $table->date('date_start_rent');
+            $table->integer('est_rent');
             $table->double('price');
-            $table->integer('return')->default(1);
+            $table->double('price_correction');
+            $table->date('date_end_rent')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cars');
+        Schema::dropIfExists('rent_data');
     }
 };
